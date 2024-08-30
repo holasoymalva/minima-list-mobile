@@ -1,117 +1,123 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+// src/App.js
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, StyleSheet, Modal, SafeAreaView } from 'react-native';
+import TaskList from './components/TaskList';
+import AddTaskModal from './components/AddTaskModal';
+import ProgressBar from './components/ProgressBar';
+import Footer from './components/Footer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+function App() {
+  const [tasks, setTasks] = useState([]);
+  const [level, setLevel] = useState(1);
+  const [completedTasks, setCompletedTasks] = useState(0);
+  const [showModal, setShowModal] = useState(false);
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  useEffect(() => {
+    const loadTasks = async () => {
+      // const savedTasks = JSON.parse(await AsyncStorage.getItem('tasks')) || [];
+      // const savedLevel = parseInt(await AsyncStorage.getItem('level')) || 1;
+      // const savedCompletedTasks = parseInt(await AsyncStorage.getItem('completedTasks')) || 0;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+      // setTasks(savedTasks);
+      // setLevel(savedLevel);
+      // setCompletedTasks(savedCompletedTasks);
+    };
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+    loadTasks();
+  }, []);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  useEffect(() => {
+    const saveData = async () => {
+      await AsyncStorage.setItem('tasks', JSON.stringify(tasks));
+      await AsyncStorage.setItem('level', level.toString());
+      await AsyncStorage.setItem('completedTasks', completedTasks.toString());
+    };
+
+    saveData();
+  }, [tasks, level, completedTasks]);
+
+  // const addTask = (task) => {
+  //   setTasks([...tasks, task]);
+  //   setShowModal(false);
+  // };
+
+  // const toggleComplete = (taskId) => {
+  //   const updatedTasks = tasks.map(task => {
+  //     if (task.id === taskId) {
+  //       const updatedTask = { ...task, completed: !task.completed };
+  //       if (updatedTask.completed) {
+  //         incrementProgress();
+  //       } else {
+  //         decrementProgress();
+  //       }
+  //       return updatedTask;
+  //     }
+  //     return task;
+  //   });
+  //   setTasks(updatedTasks);
+  // };
+
+  const incrementProgress = () => {
+    const newCompletedTasks = completedTasks + 1;
+    setCompletedTasks(newCompletedTasks);
+    if (newCompletedTasks % 10 === 0) {
+      setLevel(level + 1);
+    }
   };
 
+  const decrementProgress = () => {
+    const newCompletedTasks = completedTasks - 1;
+    setCompletedTasks(newCompletedTasks);
+  };
+
+  // const deleteTask = (taskId) => {
+  //   const updatedTasks = tasks.filter(task => task.id !== taskId);
+  //   setTasks(updatedTasks);
+  // };
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+    <SafeAreaView style={styles.app}>
+      <Text style={styles.title}>Minima-list</Text>
+      <ProgressBar level={level} completedTasks={completedTasks} />
+      <View style={styles.taskHeader}>
+        <Text style={styles.subtitle}>To do</Text>
+        <Button title="+" onPress={() => setShowModal(true)} />
+        <Modal visible={showModal} transparent={true} animationType="slide">
+          {/* <AddTaskModal addTask={addTask} closeModal={() => setShowModal(false)} /> */}
+        </Modal>
+      </View>
+      {/* <TaskList tasks={tasks} toggleComplete={toggleComplete} deleteTask={deleteTask} /> */}
+      <Footer />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  app: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
   },
-  sectionTitle: {
+  title: {
+    color: 'white',
     fontSize: 24,
-    fontWeight: '600',
+    marginBottom: 20,
+    fontFamily: 'Arial',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  taskHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 10,
   },
-  highlight: {
-    fontWeight: '700',
+  subtitle: {
+    fontSize: 24,
+    color: 'white',
   },
 });
 
