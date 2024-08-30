@@ -1,10 +1,20 @@
-// src/components/TaskList.js
-
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import TaskItem from './TaskItem';
 
-function TaskList({ tasks, toggleComplete, deleteTask }) {
+type Task = {
+  id: number;
+  title: string;
+  completed: boolean;
+};
+
+type TaskListProps = {
+  tasks: Task[];
+  toggleComplete: (taskId: number) => void;
+  deleteTask: (taskId: number) => void;
+};
+
+const TaskList: React.FC<TaskListProps> = ({ tasks, toggleComplete, deleteTask }) => {
   return (
     <View style={styles.taskList}>
       {tasks.map((task) => (
@@ -12,7 +22,7 @@ function TaskList({ tasks, toggleComplete, deleteTask }) {
       ))}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   taskList: {

@@ -1,9 +1,17 @@
-// src/components/TaskItem.js
-
 import React from 'react';
 import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
-function TaskItem({ task, toggleComplete, deleteTask }) {
+type TaskItemProps = {
+  task: {
+    id: number;
+    title: string;
+    completed: boolean;
+  };
+  toggleComplete: (taskId: number) => void;
+  deleteTask: (taskId: number) => void;
+};
+
+const TaskItem: React.FC<TaskItemProps> = ({ task, toggleComplete, deleteTask }) => {
   return (
     <View style={styles.taskItem}>
       <TouchableOpacity onPress={() => toggleComplete(task.id)}>
@@ -12,7 +20,7 @@ function TaskItem({ task, toggleComplete, deleteTask }) {
       <Button title="x" onPress={() => deleteTask(task.id)} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   taskItem: {

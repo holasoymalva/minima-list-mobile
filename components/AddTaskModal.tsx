@@ -1,17 +1,22 @@
-// src/components/AddTaskModal.js
-
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
-function AddTaskModal({ addTask, closeModal }) {
-  const [title, setTitle] = useState('');
+// Asegúrate de definir los tipos correctamente sin usar nombres de propiedades incorrectos como 'string'.
+type AddTaskModalProps = {
+  addTask: (task: { id: number; title: string; completed: boolean }) => void;
+  closeModal: () => void;
+};
+
+const AddTaskModal: React.FC<AddTaskModalProps> = ({ addTask, closeModal }) => {
+  // Definir correctamente el tipo del estado. No necesitas importar 'string' de ningún lugar.
+  const [title, setTitle] = useState<string>('');
 
   const handleAddTask = () => {
     if (title.trim() === '') return;
     const newTask = {
       id: Date.now(),
       title,
-      completed: false
+      completed: false,
     };
     addTask(newTask);
     setTitle('');
@@ -34,7 +39,7 @@ function AddTaskModal({ addTask, closeModal }) {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   modal: {

@@ -1,9 +1,12 @@
-// src/components/ProgressBar.js
-
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-function ProgressBar({ level, completedTasks }) {
+type ProgressBarProps = {
+  level: number;
+  completedTasks: number;
+};
+
+const ProgressBar: React.FC<ProgressBarProps> = ({ level, completedTasks }) => {
   const progress = (completedTasks % 10) * 10;
   return (
     <View style={styles.progressContainer}>
@@ -13,7 +16,7 @@ function ProgressBar({ level, completedTasks }) {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   progressContainer: {
@@ -35,7 +38,6 @@ const styles = StyleSheet.create({
   progress: {
     height: '100%',
     backgroundColor: 'white',
-    transition: 'width 0.3s',
   },
 });
 

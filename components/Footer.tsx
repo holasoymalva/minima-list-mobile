@@ -1,15 +1,13 @@
-// src/components/Footer.js
-
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-function Footer() {
+const Footer: React.FC = () => {
   return (
     <View style={styles.footer}>
       <Text style={styles.footerText}>Footer Content</Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   footer: {
